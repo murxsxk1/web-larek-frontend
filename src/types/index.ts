@@ -35,11 +35,7 @@ export interface ICartData {
   countCardsAmount(): void;
 }
 
-export interface IOrderData {
-  payment: string;
-  address: string;
-  mail: string;
-  phone: string;
+export interface IOrderData extends TPaymentModal, TContactModal {
   createOrder(order: IOrder): void;
   setPayment(payment: string): void;
   setAddress(address: string): void;
