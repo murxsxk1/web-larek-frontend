@@ -150,7 +150,9 @@ export interface ICartData {
 ***Интерфейс для модели данных заказов***
 
 ```typescript
-export interface IOrderData extends TPaymentModal, TContactModal {}
+export interface IOrderData {
+  order: IOrder;
+}
 ```
 
 ***Данные карточки, которые используются на главной странице***
@@ -247,18 +249,13 @@ export type TContactModal = Pick<IOrder, 'mail' | 'phone'>;
 
 ### Класс Card
 
-Базовый компонент для отображения карточки товара. Имеет три состояния отображения посредством template:
-
-- **CardCatalog** - карточка в каталоге
-- **CardPreview** - карточка в модальном окне
-- **CardBasket** - карточка в корзине
+Базовый компонент для создания DOM-элементов карточек товара. Отвечает только за отрисовку карточки на основе переданных данных и шаблона.
 
 #### 1. Назначение
 
-- Отображение данных товара в разных представлениях
-- Обработка пользовательских действий с карточкой
-- Генерация событий при взаимодействии
-- Управление состоянием карточки
+- Создание DOM-элементов карточек по шаблонам
+- Генерация событий при пользовательских действиях
+- Возвращение готовых HTML-элементов карточек
 
 #### 2. Конструктор
 
@@ -266,13 +263,12 @@ export type TContactModal = Pick<IOrder, 'mail' | 'phone'>;
 
 #### 3. Поля класса
 
-- `container: HTMLElement` - контейнер карточки
-- `data: ICard` - данные карточки товара
+- `container: HTMLElement` - контейнер для размещения карточки
 - `events: IEvents` - брокер событий
 
 #### 4. Методы класса
 
-- `render(data: ICard): void` - отрисовка карточки
+- `render(data: ICard, state: string): HTMLElement` - создание и возврат HTML-элемента карточки для заданного состояния
 - `getTemplate(state: string): HTMLElement` - получение шаблона для состояния
 
 ### Класс Modal
@@ -282,8 +278,8 @@ export type TContactModal = Pick<IOrder, 'mail' | 'phone'>;
 #### 1. Назначение
 
 - Управление видимостью модального окна
-- Отображение разных типов контента
-- Обработка действий закрытия/открытия
+- Управление содержимым модального окна
+- Обработка закрытия окна (крестик, оверлей, ESC)
 
 #### 2. Конструктор
 
@@ -294,19 +290,14 @@ export type TContactModal = Pick<IOrder, 'mail' | 'phone'>;
 - `container: HTMLElement` - контейнер модального окна
 - `content: HTMLElement` - элемент для контента
 - `closeButton: HTMLButtonElement` - кнопка закрытия
-- `changeButton: HTMLButtonElement` - кнопка перехода в следующее состояние
+- `overlay: HTMLElement` - оверлей модального окна
 - `events: IEvents` - брокер событий
 
 #### 4. Методы класса
 
 - `open(): void` - открытие окна
 - `close(): void` - закрытие окна
-- `setValid(isValid: boolean): void` - изменение активности кнопки подтверждения
-- `getInputValues(): Record<string, string>` - возвращение объекта с данными из полей формы, где ключ - name инпута, значение - данные введенные пользователем
-- `setInputValues(data: Record<string, string>): void` - получение объекта с данными для заполнения полей формы
-- `setError(data: { field: string, value: string, validInformation: string }): void` - получение объекта с данными для отображения или сокрытия текстов ошибок под полями ввода
-- `showInputError (field: string, errorMessage: string): void` - отображение полученного текст ошибки под указанным полем ввода
-- `hideInputError (field: string): void` - очистка текста ошибки под указанным полем ввода
+- `setContent(content: HTMLElement): void` - установка содержимого окна
 
 ### Класс Cart
 
@@ -314,10 +305,9 @@ export type TContactModal = Pick<IOrder, 'mail' | 'phone'>;
 
 #### 1. Назначение
 
-- Отображение списка товаров в корзине
-- Управление количеством товаров
-- Отображение общей стоимости
-- Оформление заказа
+- Отображение списка товаров в корзине 
+- Отображение итоговой суммы заказа
+- Взаимодействие с кнопкой оформления заказа
 
 #### 2. Конструктор
 
