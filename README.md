@@ -26,10 +26,20 @@
 - [Архитектура приложения](#архитектура-приложения)
   - [Слои приложения](#слои-приложения)
   - [Базовый код](#базовый-код)
-- [Данные и типы данных](#данные-и-типы-данных-используемые-в-приложении)
+- [Данные и типы данных, используемые в приложении](#данные-и-типы-данных-используемые-в-приложении)
 - [Слой данных (Model)](#слой-данных-model)
 - [Слой представления (View)](#слой-представления-view)
+  - [Класс Card](#класс-card)
+  - [Класс Modal](#класс-modal)
+  - [Класс SuccessModal](#класс-successmodal)
+  - [Класс Cart](#класс-cart)
+  - [Класс Page](#класс-page)
+  - [Абстрактный класс Form](#абстрактный-класс-form)
+  - [Класс PaymentForm](#класс-paymentform)
+  - [Класс ContactsForm](#класс-contactsform)
 - [Слой коммуникации (Presenter)](#слой-коммуникации-presenter)
+  - [Класс AppApi](#класс-appapi)
+  - [Взаимодействие компонентов](#взаимодействие-компонентов)
 
 ## Установка и запуск
 
@@ -255,7 +265,7 @@ type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
 ## Слой представления (View)
 
-Все клссы представления отвечают за отображение внутри контейнера (DOM-элемент) передаваемых в них данных.
+Все классы представления отвечают за отображение внутри контейнера (DOM-элемент) передаваемых в них данных.
 
 ---
 
@@ -327,7 +337,7 @@ type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
 #### 2. Конструктор класса SuccessModal
 
-- `constructor(container: HTMLElement, events: IEvents, actions?: IModalActions)` — принимает контейнер шаблона окна и и опциональные `actions`
+- `constructor(container: HTMLElement, events: IEvents, actions?: IModalActions)` — принимает контейнер шаблона окна и опциональные `actions`
 
 #### 3. Поля класса SuccessModal
 
@@ -408,7 +418,7 @@ type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
 #### 2. Конструктор класса Form
 
-- `constructor(container: HTMLElement, events: IEvents)` Принимает контейнер формы и брокер событий.  
+- `constructor(container: HTMLElement, events: IEvents, actions?: IFormActions)` Принимает контейнер формы и брокер событий. Параметр `actions` позволяет обрабатывать пользовательские действия.
 
 #### 3. Поля класса Form
 
@@ -434,7 +444,7 @@ type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
 #### 2. Конструктор класса PaymentForm
 
-- `constructor(container: HTMLElement, events: IEvents)` Принимает контейнер формы и брокер событий.
+- `constructor(container: HTMLElement, events: IEvents, actions?: IFormActions)` Принимает контейнер формы и брокер событий. Параметр `actions` позволяет обрабатывать пользовательские действия.
 
 #### 3. Поля класса PaymentForm
 
@@ -459,7 +469,7 @@ type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
 #### 2. Конструктор класса ContactsForm
 
-- `constructor(container: HTMLElement, events: IEvents)` Принимает контейнер формы и брокер событий.
+- `constructor(container: HTMLElement, events: IEvents, actions?: IFormActions)` Принимает контейнер формы и брокер событий. Параметр `actions` позволяет обрабатывать пользовательские действия.
 
 #### 3. Поля класса ContactsForm
 
