@@ -12,7 +12,7 @@ export interface IOrder {
   items: string[];
   payment: string;
   address: string;
-  mail: string;
+  email: string;
   phone: string;
 }
 
@@ -36,11 +36,15 @@ export interface ICartData {
 }
 
 export interface IOrderData {
+  payment: string;
+  address: string;
+  email: string;
+  phone: string;
   order: IOrder;
   createOrder(order: IOrder): void;
   setPayment(payment: string): void;
   setAddress(address: string): void;
-  setMail(mail: string): void;
+  setEmail(email: string): void;
   setPhone(phone: string): void;
   submitOrder(): void;
   validateOrderFields(data: Record<keyof TPaymentModal & TContactModal, string>): boolean;
@@ -54,4 +58,4 @@ export type TCartModal = Pick<ICard, 'title' | 'price' | 'id'> & Pick<IOrder, 't
 
 export type TPaymentModal = Pick<IOrder, 'payment' | 'address'>;
 
-export type TContactModal = Pick<IOrder, 'mail' | 'phone'>;
+export type TContactModal = Pick<IOrder, 'email' | 'phone'>;
