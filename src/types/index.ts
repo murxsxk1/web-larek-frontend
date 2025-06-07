@@ -24,10 +24,10 @@ export interface ICardsData {
 }
 
 export interface ICartData {
-  items: ICard[];
+  items: TCartModal[];
   total: number | null;
   count: number;
-  addToCart(card: ICard): void;
+  addToCart(item: TCartModal): void;
   removeFromCart(cardId: string): void;
   countPrices(): void;
   countCardsAmount(): void;
@@ -35,7 +35,7 @@ export interface ICartData {
 
 export interface IOrderData {
   order: IOrder;
-  formErrrors: TFormErrors;
+  formErrors: TFormErrors;
   setPayment(payment: string): void;
   setAddress(address: string): void;
   setEmail(email: string): void;
