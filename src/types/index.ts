@@ -19,10 +19,8 @@ export interface IOrder {
 export interface ICardsData {
   cards: ICard[];
   preview: string | null;
-  addCards(card: ICard[]): void;
-  findCard(cardId: string): ICard | undefined;
-  previewCard(cardId: string): void;
-  getCards(cardId: string): ICard;
+  addCard(card: ICard[]): void;
+  getCard(cardId: string): ICard;
 }
 
 export interface ICartData {
