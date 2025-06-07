@@ -19,7 +19,7 @@ export interface IOrder {
 export interface ICardsData {
   cards: ICard[];
   preview: string | null;
-  addCard(card: ICard[]): void;
+  addCard(card: ICard): void;
   getCard(cardId: string): ICard;
 }
 
@@ -34,18 +34,14 @@ export interface ICartData {
 }
 
 export interface IOrderData {
-  payment: string;
-  address: string;
-  email: string;
-  phone: string;
   order: IOrder;
-  createOrder(order: IOrder): void;
+  formErrrors: TFormErrors;
   setPayment(payment: string): void;
   setAddress(address: string): void;
   setEmail(email: string): void;
   setPhone(phone: string): void;
   submitOrder(): void;
-  validateOrderFields(data: Record<keyof TPaymentModal & TContactModal, string>): boolean;
+  validateOrderFields(): boolean;
 }
 
 export type TMainPage = Pick<ICard, 'category' | 'title' | 'image' | 'price' | 'id'>;
@@ -57,3 +53,5 @@ export type TCartModal = Pick<ICard, 'title' | 'price' | 'id'> & Pick<IOrder, 't
 export type TPaymentModal = Pick<IOrder, 'payment' | 'address'>;
 
 export type TContactModal = Pick<IOrder, 'email' | 'phone'>;
+
+export type TFormErrors = Record<keyof TPaymentModal | keyof TContactModal, string>;
