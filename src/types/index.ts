@@ -4,7 +4,7 @@ export interface ICard {
   image: string;
   price: number | null;
   description?: string;
-  id: number | string;
+  id: string;
 }
 
 export interface IOrder {
@@ -20,7 +20,7 @@ export interface ICardsData {
   cards: ICard[];
   preview: string | null;
   addCard(card: ICard): void;
-  getCard(cardId: number | string): ICard;
+  getCard(cardId: string): ICard;
 }
 
 export interface ICartData {
@@ -28,7 +28,7 @@ export interface ICartData {
   total: number | null;
   count: number;
   addToCart(item: TCartModal): void;
-  removeFromCart(cardId: number | string): void;
+  removeFromCart(cardId: string): void;
   countPrices(): void;
   countCardsAmount(): void;
 }

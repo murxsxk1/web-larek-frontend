@@ -1,4 +1,4 @@
-import { IApi, ICard, IOrder, TOrderModal } from "../types";
+import { IApi, ICard, TOrderModal } from "../types";
 
 export class LarekAPI {
   private _baseApi: IApi;
