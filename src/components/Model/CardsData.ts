@@ -2,12 +2,21 @@ import { ICard, ICardsData } from "../../types";
 import { IEvents } from "../base/Events";
 
 export class CardsData implements ICardsData {
-  protected _cards: ICard[];
+  protected _cards: ICard[] = [];
   protected _preview: string | null;
   protected events: IEvents;
 
   constructor(events: IEvents) {
     this.events = events;
+  }
+
+  addCard(card: ICard) {
+    this._cards = [card, ...this._cards];
+    this.events.emit('cards:changed');
+  }
+
+  getCard(cardId: number | string) {
+    return this._cards.find(item => item.id === cardId);
   }
 
   set cards(cards: ICard[]) {
@@ -19,25 +28,16 @@ export class CardsData implements ICardsData {
     return this._cards;
   }
 
-  addCard(card: ICard) {
-    this._cards = [card, ...this._cards];
-    this.events.emit('cards:changed');
-  }
-
-  getCard(cardId: string) {
-    return this._cards.find((item) => item.id === cardId);
-  }
-
   set preview(cardId: string | null) {
-      if (!cardId) {
-          this._preview = null;
-          return;
-      }
-      const selectedCard = this.getCard(cardId);
-      if (selectedCard) {
-          this._preview = cardId;
-          this.events.emit('card:selected')
-      }
+    if (!cardId) {
+        this._preview = null;
+        return;
+    }
+    const selectedCard = this.getCard(cardId);
+    if (selectedCard) {
+        this._preview = cardId;
+        this.events.emit('card:selected')
+    }
   }
 
   get preview () {

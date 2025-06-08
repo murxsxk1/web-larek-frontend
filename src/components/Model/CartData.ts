@@ -2,7 +2,7 @@ import { ICartData, TCartModal } from "../../types";
 import { IEvents } from "../base/Events";
 
 export class CartData implements ICartData {
-    protected _items: TCartModal[];
+    protected _items: TCartModal[] = [];
     protected _total: number | null;
     protected _count: number;
     protected events: IEvents;

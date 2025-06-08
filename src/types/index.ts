@@ -4,7 +4,7 @@ export interface ICard {
   image: string;
   price: number | null;
   description?: string;
-  id: string;
+  id: number | string;
 }
 
 export interface IOrder {
@@ -20,7 +20,7 @@ export interface ICardsData {
   cards: ICard[];
   preview: string | null;
   addCard(card: ICard): void;
-  getCard(cardId: string): ICard;
+  getCard(cardId: number | string): ICard;
 }
 
 export interface ICartData {
@@ -28,7 +28,7 @@ export interface ICartData {
   total: number | null;
   count: number;
   addToCart(item: TCartModal): void;
-  removeFromCart(cardId: string): void;
+  removeFromCart(cardId: number | string): void;
   countPrices(): void;
   countCardsAmount(): void;
 }
@@ -54,4 +54,14 @@ export type TPaymentModal = Pick<IOrder, 'payment' | 'address'>;
 
 export type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
+export type TOrderModal = Pick<ICard, 'id'> & Pick<IOrder, 'total'>;
+
 export type TFormErrors = Record<keyof TPaymentModal | keyof TContactModal, string>;
+
+export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
+
+export interface IApi {
+  baseUrl: string;
+  get<T>(uri: string): Promise<T>;
+  post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+}

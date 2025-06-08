@@ -1,11 +1,11 @@
+import { ApiPostMethods, IApi } from "../../types";
+
 export type ApiListResponse<Type> = {
     total: number,
     items: Type[]
 };
 
-export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
-
-export class Api {
+export class Api implements IApi {
     readonly baseUrl: string;
     protected options: RequestInit;
 
@@ -38,5 +38,4 @@ export class Api {
             body: JSON.stringify(data)
         }).then(this.handleResponse<T>);
     }
-
 }
