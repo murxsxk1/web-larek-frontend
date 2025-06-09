@@ -65,7 +65,15 @@ export interface IApi {
   post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
 }
 
-interface IFormState {
+export interface IFormState {
   valid: boolean;
   errors: string[];
+}
+
+export interface IModalData {
+    content: HTMLElement;
+}
+
+export interface ISuccess {
+    total: number;
 }
