@@ -26,7 +26,6 @@ export interface ICardsData {
 export interface ICartData {
   items: TCartModal[];
   total: number | null;
-  count: number;
   addToCart(item: TCartModal): void;
   removeFromCart(cardId: string): void;
   countPrices(): void;
@@ -64,4 +63,9 @@ export interface IApi {
   baseUrl: string;
   get<T>(uri: string): Promise<T>;
   post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+}
+
+interface IFormState {
+  valid: boolean;
+  errors: string[];
 }
