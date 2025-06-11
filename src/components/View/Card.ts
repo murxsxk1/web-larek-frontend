@@ -43,12 +43,8 @@ export class Card extends Component<ICard>{
   get price() {
     return this._cardPrice.textContent || '';
   }
-
-  render(data: Partial<ICard>): HTMLElement {
-    Object.assign(this as object, data);
-    return this.container;
-  }
 }
+
 
 export class CardPreview extends Card {
   protected _cardText: HTMLElement;

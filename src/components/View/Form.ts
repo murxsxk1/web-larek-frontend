@@ -6,8 +6,9 @@ import { IEvents } from "../base/Events";
 export class Form<T> extends Component<IFormState> {
   protected _formSubmit: HTMLButtonElement;
   protected _errors: HTMLElement;
+  protected events: IEvents;
 
-  constructor(container: HTMLElement, events: IEvents) {
+  constructor(container: HTMLFormElement, events: IEvents) {
     super(container);
 
     this._formSubmit = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
@@ -22,16 +23,17 @@ export class Form<T> extends Component<IFormState> {
 
     this.container.addEventListener('submit', (event: Event) => {
       event.preventDefault();
-      this.events.emit(`${this.container.name}:submit`);
+      this.events.emit(`${(this.container as HTMLFormElement).name}:submit`);
     })
   }
 
   protected onInputChange(field: keyof T, value: string) {
-    this.events.emit(`${this.container.name}.${String(field)}:change`, {
-            field,
-            value
+    this.events.emit(`${(this.container as HTMLFormElement).name}.${String(field)}:change`, {
+      field,
+      value
     });
   }
+
 
   set valid(value: boolean) {
     this._formSubmit.disabled = !value;

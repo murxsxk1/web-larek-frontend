@@ -36,6 +36,6 @@ export class Cart extends Component<ICartData> {
   }
 
   set total(value: string) {
-    this.setText(this._cartTotal, `$(value) синапсов`);
+    this.setText(this._cartTotal, `${value} синапсов`);
   }
 }
