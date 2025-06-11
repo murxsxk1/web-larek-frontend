@@ -6,9 +6,8 @@ import { IEvents } from "../base/Events";
 export class Form<T> extends Component<IFormState> {
   protected _formSubmit: HTMLButtonElement;
   protected _errors: HTMLElement;
-  protected events: IEvents;
 
-  constructor(container: HTMLFormElement, events: IEvents) {
+  constructor(container: HTMLFormElement, protected events: IEvents) {
     super(container);
 
     this._formSubmit = ensureElement<HTMLButtonElement>('button[type=submit]', this.container);
