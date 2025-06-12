@@ -1,10 +1,11 @@
-import { ICartData, TCartModal } from "../../types";
+import { ICartData, IOrder, TCartModal } from "../../types";
 import { IEvents } from "../base/Events";
 
 export class CartData implements ICartData {
     protected _items: TCartModal[] = [];
     protected _total: number | null;
     protected _count: number;
+    protected _order: IOrder;
 
     constructor(protected events: IEvents) {
       this.events = events;

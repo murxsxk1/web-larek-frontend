@@ -18,7 +18,7 @@ export class CardsData implements ICardsData {
     return this._cards.find(item => item.id === cardId);
   }
 
-  set cards(cards: ICard[]) {
+  setCards(cards: ICard[]) {
     this._cards = cards;
     this.events.emit('card:changed');
   }

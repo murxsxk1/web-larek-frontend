@@ -1,6 +1,9 @@
-import { ISuccess } from "../../types";
 import { ensureElement } from "../../utils/utils";
 import { Component } from "../base/Component";
+
+export interface ISuccess {
+    total: number;
+}
 
 interface ISuccessActions {
   onClick: () => void;

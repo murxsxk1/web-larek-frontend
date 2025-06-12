@@ -56,24 +56,3 @@ export type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 export type TOrderModal = Pick<ICard, 'id'> & Pick<IOrder, 'total'>;
 
 export type TFormErrors = Record<keyof TPaymentModal | keyof TContactModal, string>;
-
-export type ApiPostMethods = 'POST' | 'PUT' | 'DELETE';
-
-export interface IApi {
-  baseUrl: string;
-  get<T>(uri: string): Promise<T>;
-  post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
-}
-
-export interface IFormState {
-  valid: boolean;
-  errors: string[];
-}
-
-export interface IModalData {
-    content: HTMLElement;
-}
-
-export interface ISuccess {
-    total: number;
-}
