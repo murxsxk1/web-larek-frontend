@@ -3,10 +3,9 @@ import { IEvents } from "../base/Events";
 
 export class OrderData implements IOrderData {
     protected _order: IOrder;
-    protected events: IEvents;
     formErrors: TFormErrors;
 
-    constructor(events: IEvents) {
+    constructor(protected events: IEvents) {
       this.events = events;
     }
 

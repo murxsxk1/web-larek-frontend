@@ -1,27 +1,41 @@
-import { IApi, ICard, TOrderModal } from "../types";
+import { ICard, TOrderModal } from "../types";
+import { Api, ApiListResponse } from "./base/Api";
 
-export class LarekAPI {
-  private _baseApi: IApi;
+export interface ILarekApi {
+  getCards: () => Promise<ICard[]>;
+  getCard: (id: string) => Promise<ICard>;
+  addOrder: (order: TOrderModal) => Promise<TOrderModal>;
+}
 
-  constructor(baseApi: IApi) {
-    this._baseApi = baseApi;
+export class LarekAPI extends Api implements ILarekApi {
+  readonly cdn: string;
+
+  constructor(cdn: string, baseUrl: string, options?: RequestInit) {
+    super(baseUrl, options);
+    this.cdn = cdn;
   };
 
   getCards(): Promise<ICard[]> {
-    return this._baseApi
-      .get<ICard[]>(`/product`)
-      .then((cards: ICard[]) => cards);
+    return this.get('/product').then((data: ApiListResponse<ICard>) =>
+        data.items.map((item) => ({
+            ...item,
+            image: this.cdn + item.image
+        }))
+    );
   }
 
   getCard(cardId: string): Promise<ICard> {
-    return this._baseApi
-      .get<ICard>(`/product/${cardId}`)
-      .then((card: ICard) => card);
+      return this.get(`/product/${cardId}`).then(
+          (item: ICard) => ({
+              ...item,
+              image: this.cdn + item.image,
+          })
+      );
   }
 
   addOrder(order: TOrderModal): Promise<TOrderModal> {
-    return this._baseApi
-      .post<TOrderModal>(`/order`, order)
-      .then((data: TOrderModal) => data);
+      return this.post('/order', order).then(
+          (data: TOrderModal) => data
+      );
   }
 }

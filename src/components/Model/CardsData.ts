@@ -4,15 +4,14 @@ import { IEvents } from "../base/Events";
 export class CardsData implements ICardsData {
   protected _cards: ICard[] = [];
   protected _preview: string | null;
-  protected events: IEvents;
 
-  constructor(events: IEvents) {
+  constructor(protected events: IEvents) {
     this.events = events;
   }
 
   addCard(card: ICard) {
     this._cards = [card, ...this._cards];
-    this.events.emit('cards:changed');
+    this.events.emit('card:changed');
   }
 
   getCard(cardId: number | string) {
@@ -21,7 +20,7 @@ export class CardsData implements ICardsData {
 
   set cards(cards: ICard[]) {
     this._cards = cards;
-    this.events.emit('cards:changed');
+    this.events.emit('card:changed');
   }
 
   get cards () {

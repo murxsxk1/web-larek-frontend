@@ -1,16 +1,21 @@
-import { Card } from './components/View/Card';
+import { EventEmitter } from './components/base/Events';
+import { LarekAPI } from './components/LarekAPI';
+import { CardsData } from './components/Model/CardsData';
+import { CartData } from './components/Model/CartData';
+import { OrderData } from './components/Model/OrderData';
+import { Page } from './components/View/Page';
 import './scss/styles.scss';
-import { cloneTemplate } from './utils/utils';
+import { API_URL, CDN_URL } from './utils/constants';
 
-const gallery = document.querySelector('.gallery');
-const cardPreview = new Card(cloneTemplate('#card-basket'));
+const events = new EventEmitter();
+const api = new LarekAPI(CDN_URL, API_URL);
 
-const obj1 = {
-  title: 'Smartphone',
-  image: 'https://example.com/smartphone.jpg',
-  price: 699,
-  description: 'Latest model with advanced features.',
-  id: '1'
-}
+const cardsData = new CardsData(events);
+const cartData = new CartData(events);
+const orderData = new OrderData(events);
 
-gallery.append(cardPreview.render(obj1));
+const page = new Page(document.body, events);
+
+events.on('card:changed', () => {
+  const cardsHTMLArray = cardsData.getItems()
+})

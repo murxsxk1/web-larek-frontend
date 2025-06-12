@@ -5,20 +5,19 @@ export class CartData implements ICartData {
     protected _items: TCartModal[] = [];
     protected _total: number | null;
     protected _count: number;
-    protected events: IEvents;
 
-    constructor(events: IEvents) {
+    constructor(protected events: IEvents) {
       this.events = events;
     }
 
     addToCart(item: TCartModal) {
       this._items.push(item);
-      this.events.emit('card:added');
+      this.events.emit('cart:changed');
     };
 
     removeFromCart(cardId: string) {
       this._items = this._items.filter((item) => item.id !== cardId);
-      this.events.emit('card:removed');
+      this.events.emit('cart:changed');
     }
 
     countPrices() {
