@@ -41,7 +41,7 @@ const order = new PaymentForm(cloneTemplate(orderTemplate), events);
 // Изменение элементов каталога
 events.on('card:changed', () => {
   page.catalog = cardsData.cards.map(item => {
-    const card = new Card(cloneTemplate(cardCartTemplate), {
+    const card = new Card(cloneTemplate(cardCatalogTemplate), {
       onClick: () => events.emit('card:selected', item)
     });
     return card.render({

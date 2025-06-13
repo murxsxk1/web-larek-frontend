@@ -13,7 +13,7 @@ export class Cart extends Component<ICartData> {
 
     this._cartList = ensureElement('.basket__list', this.container);
     this._cartTotal = ensureElement('.basket__price', this.container);
-    this._cartButton = ensureElement('basket__button', this.container);
+    this._cartButton = ensureElement('.basket__button', this.container);
     
     if (this._cartButton) {
       this._cartButton.addEventListener('click', () => {
