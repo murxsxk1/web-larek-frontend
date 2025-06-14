@@ -3,12 +3,13 @@ import { LarekAPI } from './components/LarekAPI';
 import { CardsData } from './components/Model/CardsData';
 import { CartData } from './components/Model/CartData';
 import { OrderData } from './components/Model/OrderData';
-import { Card } from './components/View/Card';
+import { Card, CardPreview } from './components/View/Card';
 import { Cart } from './components/View/Cart';
 import { Modal } from './components/View/Modal';
 import { Page } from './components/View/Page';
 import { PaymentForm } from './components/View/PaymentForm';
 import './scss/styles.scss';
+import { ICard, TCartModal } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
 
@@ -55,6 +56,31 @@ events.on('card:changed', () => {
 
   page.counter = cartData.count;
 })
+
+events.on('card:selected', (item: ICard) => {
+  cardsData.setPreview(item);
+})
+
+events.on('preview:changed', (item: TCartModal) => {
+  const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
+    onClick: () => {
+      // Добавляем в корзину и закрываем модальное окно
+      cartData.addToCart(item);
+      modal.close();
+    }
+  });
+
+  modal.render({
+    content: card.render({
+      title: item.title,
+      image: item.image,
+      category: item.category,
+      price: item.price,
+      id: item.id,
+      description: item.description,
+    })
+  });
+});
 
 api.getCards()
   .then(cardsData.setCards.bind(cardsData))

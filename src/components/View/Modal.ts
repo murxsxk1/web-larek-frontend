@@ -22,16 +22,16 @@ export class Modal extends Component<IModalData> {
   }
 
   set content(value: HTMLElement) {
-    this._modalCloseButton.replaceChildren(value);
+    this._modalContent.replaceChildren(value);
   }
 
   open() {
-    this.container.classList.add('.modal_active');
+    this.container.classList.add('modal_active');
     this.events.emit('modal:open');
   }
 
   close() {
-    this.container.classList.remove('.modal_active');
+    this.container.classList.remove('modal_active');
     this.content = null;
     this.events.emit('modal:close');
   }

@@ -27,16 +27,9 @@ export class CardsData implements ICardsData {
     return this._cards;
   }
 
-  set preview(cardId: string | null) {
-    if (!cardId) {
-        this._preview = null;
-        return;
-    }
-    const selectedCard = this.getCard(cardId);
-    if (selectedCard) {
-        this._preview = cardId;
-        this.events.emit('card:selected')
-    }
+  setPreview(item: ICard) {
+    this._preview = item.id;
+    this.events.emit('preview:changed', item);
   }
 
   get preview () {

@@ -47,7 +47,7 @@ export type TMainPage = Pick<ICard, 'category' | 'title' | 'image' | 'price' | '
 
 export type TCardModal = Pick<ICard, 'category' | 'title' | 'image' | 'price' | 'description' | 'id'>;
 
-export type TCartModal = Pick<ICard, 'title' | 'price' | 'id'> & Pick<IOrder, 'total' | 'items'>;
+export type TCartModal = Pick<ICard, 'title' | 'price' | 'id' | 'description' | 'image' | 'category'> & Pick<IOrder, 'total' | 'items'>;
 
 export type TPaymentModal = Pick<IOrder, 'payment' | 'address'>;
 

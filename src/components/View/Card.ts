@@ -48,11 +48,23 @@ export class Card extends Component<ICard>{
   }
 
   set price(value: string) {
-    this.setText(this._cardPrice, value);
+    if (value!= null) {
+      this.setText(this._cardPrice, `${value} синапсов`);
+    } else {
+      this.setText(this._cardPrice, `Бесценно`);
+    }
   }
 
   get price() {
     return this._cardPrice.textContent || '';
+  }
+
+  render(data: ICard): HTMLElement {
+    this.category = data.category;
+    this.title = data.title;
+    this.image = data.image;
+    this.price = data.price?.toString() || null;
+    return this.container;
   }
 }
 
@@ -79,7 +91,15 @@ export class CardPreview extends Card {
   }
 
   get text() {
-    return this._cardButton.textContent || '';
+    return this._cardText.textContent || '';
+  }
+
+  render(data: ICard & { description?: string }): HTMLElement {
+    super.render(data);
+    if (data.description) {
+      this.text = data.description;
+    }
+    return this.container;
   }
 }
 
@@ -100,5 +120,13 @@ export class CardBasket extends Card {
   }
   set index(value: number) {
     this.setText(this._cardIndex, value);
+  }
+
+  render(data: ICard & { index?: number }): HTMLElement {
+    super.render(data);
+    if (data.index !== undefined) {
+      this.index = data.index;
+    }
+    return this.container;
   }
 }
