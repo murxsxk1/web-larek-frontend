@@ -9,15 +9,15 @@ interface ICardActions {
 export class Card extends Component<ICard>{
   protected _cardCategory?: HTMLElement;
   protected _cardTitle: HTMLElement;
-  protected _cardImage: HTMLImageElement;
+  protected _cardImage?: HTMLImageElement;
   protected _cardPrice: HTMLElement;
   
   constructor(container: HTMLElement, actions?: ICardActions) {
     super(container);
 
-    this._cardCategory = ensureElement('.card__category', this.container);
+    this._cardCategory = container.querySelector('.card__category');
     this._cardTitle = ensureElement('.card__title', this.container);
-    this._cardImage = ensureElement('.card__image', this.container) as HTMLImageElement;
+    this._cardImage = container.querySelector('.card__image') as HTMLImageElement;
     this._cardPrice = ensureElement('.card__price', this.container);
     
     if (actions?.onClick) {
@@ -28,11 +28,13 @@ export class Card extends Component<ICard>{
   }
 
   set category(value: string) {
-    this.setText(this._cardCategory, value);
+    if(this._cardCategory){
+      this.setText(this._cardCategory, value);
+    }
   }
 
   get category() {
-    return this._cardCategory.textContent || '';
+    return this._cardCategory?.textContent || '';
   }
 
   set title(value: string) {
@@ -57,14 +59,6 @@ export class Card extends Component<ICard>{
 
   get price() {
     return this._cardPrice.textContent || '';
-  }
-
-  render(data: ICard): HTMLElement {
-    this.category = data.category;
-    this.title = data.title;
-    this.image = data.image;
-    this.price = data.price?.toString() || null;
-    return this.container;
   }
 }
 
@@ -93,14 +87,6 @@ export class CardPreview extends Card {
   get text() {
     return this._cardText.textContent || '';
   }
-
-  render(data: ICard & { description?: string }): HTMLElement {
-    super.render(data);
-    if (data.description) {
-      this.text = data.description;
-    }
-    return this.container;
-  }
 }
 
 export class CardBasket extends Card {
@@ -120,13 +106,5 @@ export class CardBasket extends Card {
   }
   set index(value: number) {
     this.setText(this._cardIndex, value);
-  }
-
-  render(data: ICard & { index?: number }): HTMLElement {
-    super.render(data);
-    if (data.index !== undefined) {
-      this.index = data.index;
-    }
-    return this.container;
   }
 }

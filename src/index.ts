@@ -3,7 +3,7 @@ import { LarekAPI } from './components/LarekAPI';
 import { CardsData } from './components/Model/CardsData';
 import { CartData } from './components/Model/CartData';
 import { OrderData } from './components/Model/OrderData';
-import { Card, CardPreview } from './components/View/Card';
+import { Card, CardBasket, CardPreview } from './components/View/Card';
 import { Cart } from './components/View/Cart';
 import { Modal } from './components/View/Modal';
 import { Page } from './components/View/Page';
@@ -39,7 +39,7 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const cart = new Cart(cloneTemplate(cartTemplate), events);
 const order = new PaymentForm(cloneTemplate(orderTemplate), events);
 
-// Изменение элементов каталога
+// Отображение карточек в каталоге
 events.on('card:changed', () => {
   page.catalog = cardsData.cards.map(item => {
     const card = new Card(cloneTemplate(cardCatalogTemplate), {
@@ -57,14 +57,15 @@ events.on('card:changed', () => {
   page.counter = cartData.count;
 })
 
+// Определение нажатой карточки
 events.on('card:selected', (item: ICard) => {
   cardsData.setPreview(item);
 })
 
+// Отображение превью карточки при нажатии
 events.on('preview:changed', (item: TCartModal) => {
   const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
     onClick: () => {
-      // Добавляем в корзину и закрываем модальное окно
       cartData.addToCart(item);
       modal.close();
     }
@@ -82,6 +83,44 @@ events.on('preview:changed', (item: TCartModal) => {
   });
 });
 
+// Блокировка скролла при открытии модельного окна
+events.on('modal:open', () => {
+  page.locked = true;
+})
+
+// Отмена блокировки скролла при закрытии модельного окна
+events.on('modal:close', () => {
+  page.locked = false;
+})
+
+// Открытие корзины
+events.on('cart:open', () => {
+  modal.render({
+    content: cart.render()
+  })
+})
+
+// Изменение содержимого корзины
+events.on('cart:changed', () => {
+  page.counter = cartData.items.length;
+  cart.items = cartData.items.map((item, index) => {
+    const card = new CardBasket(cloneTemplate(cardCartTemplate), {
+      onClick: (event) => {
+        event.stopPropagation();
+        cartData.removeFromCart(item.id);
+      }
+    });
+    return card.render({
+      title: item.title,
+      price: item.price,
+      index: index + 1
+    })
+  })
+  let total = 0;
+  cart.total = total;
+})
+
+// Получение данных карточек
 api.getCards()
   .then(cardsData.setCards.bind(cardsData))
   .catch(error => {

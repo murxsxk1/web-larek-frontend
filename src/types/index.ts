@@ -5,6 +5,7 @@ export interface ICard {
   price: number | null;
   description?: string;
   id: string;
+  index: number;
 }
 
 export interface IOrder {

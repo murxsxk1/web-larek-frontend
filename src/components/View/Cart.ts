@@ -42,7 +42,7 @@ export class Cart extends Component<ICartData> {
     }
   }
 
-  set total(value: string) {
+  set total(value: number) {
     this.setText(this._cartTotal, `${value} синапсов`);
   }
 }
