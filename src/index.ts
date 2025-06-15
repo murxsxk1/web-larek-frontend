@@ -48,10 +48,15 @@ events.on('card:changed', () => {
     const card = new Card(cloneTemplate(cardCatalogTemplate), {
       onClick: () => events.emit('card:selected', item)
     });
+    
+    // Получаем CSS класс для категории из модели
+    const categoryClass = cardsData.getCategoryColor(item.category);
+    
     return card.render({
       title: item.title,
       image: item.image,
       category: item.category,
+      categoryClass: categoryClass,
       price: item.price,
       id: item.id
     });
@@ -77,17 +82,26 @@ events.on('preview:changed', (item: TCartModal) => {
    }
   });
 
+  // Получаем CSS класс для категории из модели
+  const categoryClass = cardsData.getCategoryColor(item.category);
+
   modal.render({
     content: card.render({
       title: item.title,
       image: item.image,
       category: item.category,
+      categoryClass: categoryClass,
       price: item.price,
       id: item.id,
       description: item.description,
       selected: isInCart || isPriceless, // Кнопка неактивна если товар в корзине ИЛИ бесценный
     })
   });
+});
+
+// Обработка изменения метода оплаты из модели
+events.on('payment:method-changed', (data: { method: string }) => {
+  order.paymentButtonsState = data.method;
 });
 
 // Блокировка скролла при открытии модального окна

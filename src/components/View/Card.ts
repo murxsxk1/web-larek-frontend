@@ -30,26 +30,15 @@ export class Card extends Component<ICard>{
   set category(value: string) {
     if(this._cardCategory){
       this.setText(this._cardCategory, value);
-      this.setCategoryColor(value);
     }
   }
 
-  setCategoryColor(category: string) {
+  set categoryClass(value: string) {
     if (!this._cardCategory) return;
 
     this._cardCategory.className = 'card__category';
-
-    const categoryMap: Record<string, string> = {
-      'софт-скил': 'card__category_soft',
-      'хард-скил': 'card__category_hard',
-      'другое': 'card__category_other',
-      'дополнительное': 'card__category_additional',
-      'кнопка': 'card__category_button'
-    }
-
-    const modifier = categoryMap[this.category.toLowerCase()];
-    if (modifier) {
-      this._cardCategory.classList.add(modifier);
+    if (value) {
+      this._cardCategory.classList.add(value);
     }
   }
 

@@ -35,4 +35,17 @@ export class CardsData implements ICardsData {
   get preview () {
     return this._preview;
   }
+
+  // Перенесенный метод из Card
+  getCategoryColor(category: string): string {
+    const categoryMap: Record<string, string> = {
+      'софт-скил': 'card__category_soft',
+      'хард-скил': 'card__category_hard',
+      'другое': 'card__category_other',
+      'дополнительное': 'card__category_additional',
+      'кнопка': 'card__category_button'
+    };
+
+    return categoryMap[category.toLowerCase()] || '';
+  }
 }

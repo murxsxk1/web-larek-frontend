@@ -11,10 +11,8 @@ export class CartData implements ICartData {
     }
 
     addToCart(item: TCartModal) {
-        // Проверяем, нет ли уже такого товара в корзине
         const existingItem = this._items.find(cartItem => cartItem.id === item.id);
-        if (existingItem) {
-            return; // Не добавляем дубликаты
+        if (existingItem) {return;
         }
         
         this._items.push(item);

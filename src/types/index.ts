@@ -7,6 +7,7 @@ export interface ICard {
   id: string;
   index: number;
   selected: boolean;
+  categoryClass: string;
 }
 
 export interface IOrder {
