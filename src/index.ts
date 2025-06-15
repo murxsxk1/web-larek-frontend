@@ -65,11 +65,16 @@ events.on('card:selected', (item: ICard) => {
 
 // Отображение превью карточки при нажатии
 events.on('preview:changed', (item: TCartModal) => {
+  const isInCart = cartData.items.some(cartItem => cartItem.id === item.id);
+  const isPriceless = item.price === null;
+
   const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
-    onClick: () => {
-      cartData.addToCart(item);
-      modal.close();
-    }
+   onClick: () => {
+      if (!isInCart && !isPriceless) {
+        cartData.addToCart(item);
+        modal.close();
+      }
+   }
   });
 
   modal.render({
@@ -80,6 +85,7 @@ events.on('preview:changed', (item: TCartModal) => {
       price: item.price,
       id: item.id,
       description: item.description,
+      selected: isInCart || isPriceless, // Кнопка неактивна если товар в корзине ИЛИ бесценный
     })
   });
 });

@@ -30,6 +30,26 @@ export class Card extends Component<ICard>{
   set category(value: string) {
     if(this._cardCategory){
       this.setText(this._cardCategory, value);
+      this.setCategoryColor(value);
+    }
+  }
+
+  setCategoryColor(category: string) {
+    if (!this._cardCategory) return;
+
+    this._cardCategory.className = 'card__category';
+
+    const categoryMap: Record<string, string> = {
+      'софт-скил': 'card__category_soft',
+      'хард-скил': 'card__category_hard',
+      'другое': 'card__category_other',
+      'дополнительное': 'card__category_additional',
+      'кнопка': 'card__category_button'
+    }
+
+    const modifier = categoryMap[this.category.toLowerCase()];
+    if (modifier) {
+      this._cardCategory.classList.add(modifier);
     }
   }
 
@@ -60,6 +80,14 @@ export class Card extends Component<ICard>{
   get price() {
     return this._cardPrice.textContent || '';
   }
+
+  set id(value: string) {
+    this.container.dataset.id = value;
+  }
+
+  get id(): string {
+    return this.container.dataset.id || '';
+  }
 }
 
 
@@ -87,7 +115,24 @@ export class CardPreview extends Card {
   get text() {
     return this._cardText.textContent || '';
   }
+
+  set selected(value: boolean) {
+    if(!this._cardButton) return;
+    
+    if (value) {
+      // Товар уже в корзине или бесценный - кнопка неактивна
+      this._cardButton.disabled = true;
+      // Проверяем, является ли товар бесценным (цена null)
+      const isPriceless = this.price.includes('Бесценно');
+      this.setText(this._cardButton, isPriceless ? 'Бесценный товар купить нельзя' : 'Товар уже в корзине');
+    } else {
+      // Товар не в корзине и имеет цену - кнопка активна
+      this._cardButton.disabled = false;
+      this.setText(this._cardButton, 'В корзину');
+    }
+  }
 }
+
 
 export class CardBasket extends Card {
   protected _cardIndex: HTMLElement;

@@ -19,7 +19,7 @@ export class LarekAPI extends Api implements ILarekApi {
     return this.get('/product').then((data: ApiListResponse<ICard>) =>
         data.items.map((item) => ({
             ...item,
-            image: this.cdn + item.image
+            image: this.cdn + item.image.replace('svg', 'png'),
         }))
     );
   }
@@ -28,7 +28,7 @@ export class LarekAPI extends Api implements ILarekApi {
       return this.get(`/product/${cardId}`).then(
           (item: ICard) => ({
               ...item,
-              image: this.cdn + item.image,
+              image: this.cdn + item.image.replace('svg', 'png'),
           })
       );
   }

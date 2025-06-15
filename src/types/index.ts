@@ -6,6 +6,7 @@ export interface ICard {
   description?: string;
   id: string;
   index: number;
+  selected: boolean;
 }
 
 export interface IOrder {

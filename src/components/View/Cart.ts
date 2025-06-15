@@ -27,10 +27,13 @@ export class Cart extends Component<ICartData> {
   set items(items: HTMLElement[]) {
     if (items.length) {
       this._cartList.replaceChildren(...items);
+      this.setDisabled(this._cartButton, false);
     } else {
       this._cartList.replaceChildren(createElement<HTMLParagraphElement>('p', {
         textContent: 'Корзина пуста'
       }))
+
+      this.setDisabled(this._cartButton, true);
     }
   }
 
