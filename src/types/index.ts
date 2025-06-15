@@ -15,6 +15,7 @@ export interface IOrder {
   address: string;
   email: string;
   phone: string;
+  id: string;
 }
 
 export interface ICardsData {
@@ -50,7 +51,7 @@ export type TCardModal = Pick<ICard, 'category' | 'title' | 'image' | 'price' | 
 
 export type TCartModal = Pick<ICard, 'title' | 'price' | 'id' | 'description' | 'image' | 'category'> & Pick<IOrder, 'total' | 'items'>;
 
-export type TPaymentModal = Pick<IOrder, 'payment' | 'address'>;
+export type TPaymentModal = Pick<IOrder, 'payment' | 'address' | 'email' | 'phone'>;
 
 export type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 

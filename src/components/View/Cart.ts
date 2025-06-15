@@ -17,7 +17,7 @@ export class Cart extends Component<ICartData> {
     
     if (this._cartButton) {
       this._cartButton.addEventListener('click', () => {
-        events.emit('cart:open');
+        events.emit('order:open');
       })
     }
 

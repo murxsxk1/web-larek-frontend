@@ -8,8 +8,10 @@ import { Cart } from './components/View/Cart';
 import { Modal } from './components/View/Modal';
 import { Page } from './components/View/Page';
 import { PaymentForm } from './components/View/PaymentForm';
+import { ContactsForm } from './components/View/ContactsForm'; // Добавлен импорт
+import { SuccessModal } from './components/View/SuccessModal';
 import './scss/styles.scss';
-import { ICard, TCartModal } from './types';
+import { ICard, TCartModal, TContactModal, TPaymentModal } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
 
@@ -38,6 +40,7 @@ const page = new Page(document.body, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const cart = new Cart(cloneTemplate(cartTemplate), events);
 const order = new PaymentForm(cloneTemplate(orderTemplate), events);
+const contactsForm = new ContactsForm(cloneTemplate(contactsTemplate), events); // Создание экземпляра ContactsForm
 
 // Отображение карточек в каталоге
 events.on('card:changed', () => {
@@ -53,14 +56,12 @@ events.on('card:changed', () => {
       id: item.id
     });
   });
-
-  page.counter = cartData.count;
-})
+});
 
 // Определение нажатой карточки
 events.on('card:selected', (item: ICard) => {
   cardsData.setPreview(item);
-})
+});
 
 // Отображение превью карточки при нажатии
 events.on('preview:changed', (item: TCartModal) => {
@@ -83,24 +84,24 @@ events.on('preview:changed', (item: TCartModal) => {
   });
 });
 
-// Блокировка скролла при открытии модельного окна
+// Блокировка скролла при открытии модального окна
 events.on('modal:open', () => {
   page.locked = true;
-})
+});
 
-// Отмена блокировки скролла при закрытии модельного окна
+// Отмена блокировки скролла при закрытии модального окна
 events.on('modal:close', () => {
   page.locked = false;
-})
+});
 
 // Открытие корзины
 events.on('cart:open', () => {
   modal.render({
     content: cart.render()
-  })
-})
+  });
+});
 
-// Изменение содержимого корзины
+// Изменение содержимого корзины (отображение карточки, указание индекса, подсчет общей суммы)
 events.on('cart:changed', () => {
   page.counter = cartData.items.length;
   cart.items = cartData.items.map((item, index) => {
@@ -114,15 +115,98 @@ events.on('cart:changed', () => {
       title: item.title,
       price: item.price,
       index: index + 1
+    });
+  });
+  cart.total = cartData.total;
+});
+
+// Открытие формы заказа (этап 1 - адрес и способ оплаты)
+events.on('order:open', () => {
+  // Устанавливаем данные корзины в заказ
+  orderData.setOrderData(cartData.total, cartData.items.map(item => item.id));
+  
+  modal.render({
+    content: order.render({
+      address: orderData.order.address || '',
+      payment: orderData.order.payment || '',
+      valid: orderData.validatePaymentForm(),
+      errors: [orderData.formErrors.address, orderData.formErrors.payment]
+        .filter(error => error !== "")
     })
-  })
-  let total = 0;
-  cart.total = total;
-})
+  });
+});
+
+// Открытие формы контактов (этап 2 - email и телефон)
+events.on('contacts:open', () => {
+  modal.render({
+    content: contactsForm.render({
+      email: orderData.order.email || '',
+      phone: orderData.order.phone || '',
+      valid: orderData.validateContactsForm(),
+      errors: [orderData.formErrors.email, orderData.formErrors.phone]
+        .filter(error => error !== "")
+    })
+  });
+});
+
+// Отправка формы оплаты (переход к контактам)
+events.on('order:submit', () => {
+  if (orderData.validatePaymentForm()) {
+    events.emit('contacts:open');
+  }
+});
+
+// Отправка формы заказа
+events.on('contacts:submit', () => {
+  if (orderData.validateContactsForm()) {
+    
+    orderData.setOrderData(cartData.total, cartData.items.map(item => item.id));
+    
+    api.addOrder(orderData.order)
+      .then((result) => {
+        const success = new SuccessModal(cloneTemplate(successModalTemplate), {
+          onClick: () => {
+            modal.close();
+            cartData.clearCart();
+            orderData.clearOrder();
+          }
+        });
+
+        modal.render({
+          content: success.render({
+            total: result.total || cartData.total
+          })
+        });
+      })
+      .catch(error => {
+        console.error('Ошибка при отправке заказа:', error);
+      });
+  }
+});
+
+// Изменение состояния валидации форм
+events.on('formErrors:change', (errors: Partial<TPaymentModal>) => {
+  const { email, phone, address, payment } = errors;
+  
+  // Обновляем состояние формы оплаты
+  const paymentFormValid = !address && !payment;
+  order.valid = paymentFormValid;
+  order.errors = [address, payment].filter(i => !!i).join('; ');
+  
+  // Обновляем состояние формы контактов
+  const contactsFormValid = !email && !phone;
+  contactsForm.valid = contactsFormValid;
+  contactsForm.errors = [email, phone].filter(i => !!i).join('; ');
+});
+
+// Изменилось одно из полей
+events.on(/^(order|payment|contacts)\..*:change/, (data: { field: keyof TPaymentModal, value: string }) => {
+  orderData.setOrderField(data.field, data.value);
+});
 
 // Получение данных карточек
 api.getCards()
   .then(cardsData.setCards.bind(cardsData))
   .catch(error => {
     console.error(error);
-  })
+  });
