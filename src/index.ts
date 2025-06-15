@@ -41,6 +41,7 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const cart = new Cart(cloneTemplate(cartTemplate), events);
 const order = new PaymentForm(cloneTemplate(orderTemplate), events);
 const contactsForm = new ContactsForm(cloneTemplate(contactsTemplate), events); // Создание экземпляра ContactsForm
+let orderCompleted = false;
 
 // Отображение карточек в каталоге
 events.on('card:changed', () => {
@@ -69,14 +70,24 @@ events.on('card:selected', (item: ICard) => {
 });
 
 // Отображение превью карточки при нажатии
-events.on('preview:changed', (item: TCartModal) => {
-  const isInCart = cartData.items.some(cartItem => cartItem.id === item.id);
-  const isPriceless = item.price === null;
+events.on('preview:changed', (item: ICard) => {
+  // Используем методы из CardsData для определения состояния
+  const isAvailable = cardsData.isAvailableForPurchase(item, cartData.items);
+  const buttonText = cardsData.getButtonText(item, cartData.items);
 
   const card = new CardPreview(cloneTemplate(cardPreviewTemplate), {
    onClick: () => {
-      if (!isInCart && !isPriceless) {
-        cartData.addToCart(item);
+      if (isAvailable) {
+        // Преобразуем ICard в TCartModal для добавления в корзину
+        const cartItem: TCartModal = {
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          category: item.category,
+          image: item.image,
+          description: item.description
+        };
+        cartData.addToCart(cartItem);
         modal.close();
       }
    }
@@ -85,43 +96,25 @@ events.on('preview:changed', (item: TCartModal) => {
   // Получаем CSS класс для категории из модели
   const categoryClass = cardsData.getCategoryColor(item.category);
 
+  const renderedCard = card.render({
+    title: item.title,
+    image: item.image,
+    category: item.category,
+    categoryClass: categoryClass,
+    price: item.price,
+    id: item.id,
+    description: item.description,
+  });
+
+  // Устанавливаем состояние кнопки через интегрированные методы
+  card.setButtonState(!isAvailable, buttonText);
+
   modal.render({
-    content: card.render({
-      title: item.title,
-      image: item.image,
-      category: item.category,
-      categoryClass: categoryClass,
-      price: item.price,
-      id: item.id,
-      description: item.description,
-      selected: isInCart || isPriceless, // Кнопка неактивна если товар в корзине ИЛИ бесценный
-    })
+    content: renderedCard
   });
 });
 
-// Обработка изменения метода оплаты из модели
-events.on('payment:method-changed', (data: { method: string }) => {
-  order.paymentButtonsState = data.method;
-});
-
-// Блокировка скролла при открытии модального окна
-events.on('modal:open', () => {
-  page.locked = true;
-});
-
-// Отмена блокировки скролла при закрытии модального окна
-events.on('modal:close', () => {
-  page.locked = false;
-});
-
-// Открытие корзины
-events.on('cart:open', () => {
-  modal.render({
-    content: cart.render()
-  });
-});
-
-// Изменение содержимого корзины (отображение карточки, указание индекса, подсчет общей суммы)
+// Обновление превью при изменении корзины
 events.on('cart:changed', () => {
   page.counter = cartData.items.length;
   cart.items = cartData.items.map((item, index) => {
@@ -138,6 +131,28 @@ events.on('cart:changed', () => {
     });
   });
   cart.total = cartData.total;
+});
+
+// Блокировка скролла при открытии модального окна
+events.on('modal:open', () => {
+  page.locked = true;
+});
+
+// Отмена блокировки скролла при закрытии модального окна
+events.on('modal:close', () => {
+  page.locked = false;
+  if (orderCompleted) {
+    cartData.clearCart();
+    orderData.clearOrder();
+    orderCompleted = false;
+  }
+});
+
+// Открытие корзины
+events.on('cart:open', () => {
+  modal.render({
+    content: cart.render()
+  });
 });
 
 // Открытие формы заказа (этап 1 - адрес и способ оплаты)
@@ -184,11 +199,14 @@ events.on('contacts:submit', () => {
     
     api.addOrder(orderData.order)
       .then((result) => {
+        orderCompleted = true;
+        cardsData.clearPreview();
         const success = new SuccessModal(cloneTemplate(successModalTemplate), {
           onClick: () => {
             modal.close();
             cartData.clearCart();
             orderData.clearOrder();
+            orderCompleted = false;
           }
         });
 
@@ -222,6 +240,11 @@ events.on('formErrors:change', (errors: Partial<TPaymentModal>) => {
 // Изменилось одно из полей
 events.on(/^(order|payment|contacts)\..*:change/, (data: { field: keyof TPaymentModal, value: string }) => {
   orderData.setOrderField(data.field, data.value);
+  
+  // Если изменился способ оплаты, обновляем отображение кнопок
+  if (data.field === 'payment') {
+    order.paymentButtonsState = data.value;
+  }
 });
 
 // Получение данных карточек

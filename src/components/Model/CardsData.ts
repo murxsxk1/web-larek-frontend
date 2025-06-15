@@ -1,4 +1,4 @@
-import { ICard, ICardsData } from "../../types";
+import { ICard, ICardsData, TCartModal } from "../../types";
 import { IEvents } from "../base/Events";
 
 export class CardsData implements ICardsData {
@@ -32,6 +32,10 @@ export class CardsData implements ICardsData {
     this.events.emit('preview:changed', item);
   }
 
+  clearPreview() {
+    this._preview = null;
+  }
+
   get preview () {
     return this._preview;
   }
@@ -47,5 +51,26 @@ export class CardsData implements ICardsData {
     };
 
     return categoryMap[category.toLowerCase()] || '';
+  }
+
+  isPriceless(card: ICard): boolean {
+    return card.price === null;
+  }
+
+  // Метод для проверки доступности товара для покупки
+  isAvailableForPurchase(card: ICard, cartItems: TCartModal[]): boolean {
+    const isInCart = cartItems.some(item => item.id === card.id);
+    const isPriceless = this.isPriceless(card);
+    return !isInCart && !isPriceless;
+  }
+
+  // Получить текст для кнопки товара
+  getButtonText(card: ICard, cartItems: TCartModal[]): string {
+    if (this.isPriceless(card)) {
+      return 'Бесценный товар купить нельзя';
+    }
+    
+    const isInCart = cartItems.some(item => item.id === card.id);
+    return isInCart ? 'Товар уже в корзине' : 'В корзину';
   }
 }

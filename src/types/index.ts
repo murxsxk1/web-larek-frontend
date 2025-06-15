@@ -5,9 +5,9 @@ export interface ICard {
   price: number | null;
   description?: string;
   id: string;
-  index: number;
-  selected: boolean;
-  categoryClass: string;
+  index?: number;
+  selected?: boolean;
+  categoryClass?: string;
 }
 
 export interface IOrder {
@@ -47,16 +47,23 @@ export interface IOrderData {
   validateOrderFields(): boolean;
 }
 
+// Для отображения карточек в каталоге
 export type TMainPage = Pick<ICard, 'category' | 'title' | 'image' | 'price' | 'id'>;
 
+// Для отображения карточки в модальном окне (превью)
 export type TCardModal = Pick<ICard, 'category' | 'title' | 'image' | 'price' | 'description' | 'id'>;
 
-export type TCartModal = Pick<ICard, 'title' | 'price' | 'id' | 'description' | 'image' | 'category'> & Pick<IOrder, 'total' | 'items'>;
+// ИСПРАВЛЕНО: для элементов корзины - только данные о товаре, без total и items
+export type TCartModal = Pick<ICard, 'title' | 'price' | 'id' | 'description' | 'image' | 'category'>;
 
+// Для форм оплаты и адреса
 export type TPaymentModal = Pick<IOrder, 'payment' | 'address' | 'email' | 'phone'>;
 
+// Для формы контактов
 export type TContactModal = Pick<IOrder, 'email' | 'phone'>;
 
+// Для отображения результата заказа
 export type TOrderModal = Pick<ICard, 'id'> & Pick<IOrder, 'total'>;
 
+// Для ошибок валидации форм
 export type TFormErrors = Record<keyof TPaymentModal | keyof TContactModal, string>;

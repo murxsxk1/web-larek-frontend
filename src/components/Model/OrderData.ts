@@ -44,13 +44,6 @@ export class OrderData implements IOrderData {
         this.validateOrderFields();
     }
 
-    // Перенесенный метод из PaymentForm
-    setPaymentMethod(method: string) {
-        this.setPayment(method as "online" | "receipt");
-        // Эмитим событие для обновления UI
-        this.events.emit('payment:method-changed', { method });
-    }
-
     submitOrder() {
         this.events.emit('order:submit', this._order);
     }
