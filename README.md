@@ -327,8 +327,8 @@ type TFormErrors = Record<keyof TPaymentModal | keyof TContactModal, string>;
 - `get price (): string` - возвращает цену карточки;
 - `set id(value: string)` - устанавливает идентификатор карточки;
 - `get id (): string` - возвращает идентификатор карточки;
-- `set text(value: string)` - устанавливает текст карточки (поле CardPreview);
-- `get text (): string` - возвращает текст карточки (поле CardPreview);
+- `set description(value: string)` - устанавливает описание карточки (поле CardPreview);
+- `get description (): string` - возвращает описание карточки (поле CardPreview);
 - `setButtonState(disabled: boolean, text: string)` - устанавливает состояние кнопки карточки (поле CardPreview);
 - `set index(value: string)` - устанавливает индекс карточки (поле CardBasket);
 

@@ -104,11 +104,11 @@ export class CardPreview extends BaseCard {
 		}
 	}
 
-	set text(value: string) {
+	set description(value: string) {
 		this.setText(this._cardText, value);
 	}
 
-	get text() {
+	get description() {
 		return this._cardText.textContent || '';
 	}
 
